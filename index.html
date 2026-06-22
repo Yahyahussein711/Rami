@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F5F5DC">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rami">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23F5F5DC' width='180' height='180'/><circle cx='90' cy='90' r='60' fill='%235D4037'/><path d='M 70 60 Q 90 80 70 100 Q 90 85 110 100 Q 90 80 110 60' fill='%23FEFDF8'/></svg>">
+<link rel="manifest" href="manifest.json">
+<title>Rami</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
+
+:root{
+  --bg: #F5F5DC;
+  --surface: #FEFDF8;
+  --surface-2: #EFEBE0;
+  --accent: #5D4037;
+  --accent-dim: #8D6E63;
+  --ink: #3E2723;
+  --muted: #795548;
+  --line: #D7CCC8;
+  --line-accent: rgba(93, 64, 55, 0.35);
+  --display: 'Open Sans', sans-serif;
+  --serif: 'Lora', serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:var(--serif);
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.8;
+  background-image:radial-gradient(circle at 50% -10%, #FEFDF8 0%, #F5F5DC 55%);
+}
+.wrap{max-width:680px;margin:0 auto;padding:0 24px 90px;}
+
+.progress-line{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0%;transition:width .2s;z-index:50;box-shadow:0 0 10px rgba(93, 64, 55, 0.3);}
+
+/* SVG STYLES */
+.arabic-r-svg {
+  height: 1.1em;
+  width: auto;
+  margin-right: 2px;
+  vertical-align: baseline;
+  position: relative;
+  top: 0.15em;
+}
+.crest .arabic-r-svg {
+  height: 0.85em;
+  margin-right: 0;
+  top: 0;
+}
+.lib-title .arabic-r-svg {
+  height: 1em;
+  margin-right: 4px;
+  top: 0.05em;
+}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;background:rgba(245, 245, 220, 0.85);backdrop-filter:blur(10px);
+  display:flex;justify-content:space-between;align-items:center;padding:15px 24px;
+  max-width:680px;margin:0 auto;z-index:40;border-bottom:1px solid var(--line);gap:10px;}
+.brand-wrap{display:flex;align-items:center;gap:11px;cursor:pointer;flex:1;}
+.crest{width:30px;height:30px;border:1.5px solid var(--accent);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--accent);}
+.brand{font-family:var(--serif);font-size:1.5em;letter-spacing:2px;color:var(--ink);
+  font-weight:700;text-transform:uppercase; display:flex; align-items:center;}
+.top-actions{display:flex;gap:8px;}
+.pill{background:transparent;border:1px solid var(--line-accent);color:var(--accent);
+  font-family:var(--display);font-weight:700;font-size:0.74em;letter-spacing:1.5px;
+  text-transform:uppercase;padding:8px 14px;border-radius:2px;cursor:pointer;transition:all .2s;}
+.pill:hover{background:var(--accent);color:#F5F5DC;}
+
+/* LIBRARY HEAD */
+.lib-head{padding:46px 0 26px;}
+.eyebrow{font-family:var(--display);font-size:0.74em;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:14px;}
+.lib-title{font-family:var(--serif);font-size:3.5em;letter-spacing:1px;text-transform:uppercase;
+  color:var(--ink);font-weight:700;line-height:1;margin-bottom:14px; display:flex; justify-content:center; align-items:center;}
+.lib-sub{color:var(--muted);font-style:italic;font-size:1.02em;}
+.rule-double{border:none;border-top:1px solid var(--line-accent);border-bottom:1px solid var(--line-accent);
+  height:4px;margin:22px 0 26px;}
+
+.add-cta{background:var(--surface);border:1px dashed var(--line-accent);border-radius:3px;
+  padding:18px;text-align:center;color:var(--accent);font-family:var(--display);font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;font-size:0.82em;cursor:pointer;margin-bottom:18px;transition:all .2s;}
+.add-cta:hover{border-color:var(--accent);background:var(--surface-2);}
+
+/* LIBRARY CARDS */
+.lib-item{background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  padding:24px;margin-bottom:16px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.lib-item::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);
+  transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.lib-item:hover{border-color:var(--line-accent);transform:translateY(-3px);
+  box-shadow:0 14px 40px rgba(93, 64, 55, 0.15);}
+.lib-item:hover::before{transform:scaleX(1);}
+.lib-index{position:absolute;top:18px;right:22px;font-family:var(--display);font-size:0.8em;
+  letter-spacing:2px;color:var(--accent-dim);opacity:0.7;}
+.lib-kicker{font-family:var(--display);font-size:0.72em;text-transform:uppercase;letter-spacing:2.5px;
+  color:var(--accent);margin-bottom:11px;}
+.lib-item h3{font-family:var(--serif);font-size:1.55em;color:var(--ink);font-weight:700;
+  line-height:1.25;margin-bottom:10px;max-width:90%;}
+.lib-meta{font-size:0.85em;color:var(--muted);font-style:italic;}
+.lib-tags{margin-top:13px;display:flex;gap:8px;flex-wrap:wrap;}
+.lib-done,.lib-yours{font-family:var(--display);font-size:0.68em;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.5px;padding:4px 11px;border-radius:2px;}
+.lib-done{color:#F5F5DC;background:var(--accent);}
+.lib-yours{color:var(--accent);border:1px solid var(--line-accent);}
+
+/* STORY */
+.story-head{padding:30px 0 26px; text-align: center;}
+.back-link{display:inline-block;color:var(--accent);font-family:var(--display);font-size:0.74em;
+  letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-bottom:18px;}
+.kicker{font-family:var(--display);font-size:0.76em;text-transform:uppercase;letter-spacing:3px;
+  color:var(--accent);margin-bottom:18px;}
+h1{font-family:var(--serif);font-size:2.8em;letter-spacing:0.05em; line-height:1.2;color:var(--ink);font-weight:700;margin-bottom:16px;}
+.read-meta{font-size:0.86em;color:var(--muted);font-style:italic;}
+.story-body{font-size:1.15em;line-height:1.92;color:#4E342E;padding-top:24px;}
+.story-body p{margin-bottom:1.45em;}
+.story-body p:first-of-type::first-letter{font-family:var(--serif);font-size:3.6em;float:left;
+  line-height:0.8;padding:8px 12px 0 0;color:var(--accent);font-weight:700;}
+.divider{text-align:center;color:var(--line-accent);margin:40px 0;letter-spacing:8px;font-size:0.9em;}
+.finish-zone{text-align:center;padding:22px 0 10px;}
+
+/* BUTTONS */
+.btn{padding:14px 30px;border:none;border-radius:3px;font-family:var(--display);font-size:0.84em;
+  font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+.btn-primary{background:var(--accent);color:#FEFDF8;}
+.btn-primary:hover{background:#4E342E;box-shadow:0 6px 20px rgba(93, 64, 55, 0.25);}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none;background:var(--muted);}
+.btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--line-accent);}
+.btn-ghost:hover{background:var(--accent);color:#FEFDF8;}
+
+/* STEP CARDS */
+.step{display:none;background:var(--surface);border:1px solid var(--line);border-top:2px solid var(--accent);
+  border-radius:4px;padding:34px 30px;margin-top:32px;box-shadow:0 10px 40px rgba(93, 64, 55, 0.08);
+  animation:rise .4s ease;}
+.step.active{display:block;}
+@keyframes rise{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.step-kicker{font-family:var(--display);font-size:0.74em;text-transform:uppercase;letter-spacing:2.5px;
+  color:var(--accent);margin-bottom:12px;}
+.step-q{font-family:var(--serif);font-size:1.6em;color:var(--ink);line-height:1.35;margin-bottom:8px;}
+.step-sub{font-size:0.96em;color:var(--muted);font-style:italic;margin-bottom:22px;line-height:1.6;}
+
+label{display:block;font-family:var(--display);font-size:0.72em;text-transform:uppercase;letter-spacing:2px;
+  color:var(--accent);font-weight:700;margin-bottom:8px;margin-top:4px;}
+.field-help{font-size:0.84em;color:var(--muted);font-style:italic;margin-bottom:9px;}
+input[type=text],textarea{width:100%;padding:14px;border:1px solid var(--line);border-radius:3px;
+  font-family:var(--serif);font-size:1.05em;line-height:1.7;color:var(--ink);background:var(--surface);
+  resize:vertical;margin-bottom:18px;}
+input::placeholder,textarea::placeholder{color:var(--accent-dim);}
+input:focus,textarea:focus{outline:none;border-color:var(--accent); box-shadow: 0 0 0 2px var(--line-accent);}
+textarea{min-height:115px;}
+textarea.tall{min-height:230px;}
+.hint{font-size:0.84em;color:var(--muted);text-align:right;min-height:18px;margin-bottom:16px;margin-top:-12px;}
+.hint.ready{color:var(--accent); font-weight: bold;}
+
+.your-lesson{background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:18px 20px;margin-bottom:18px;}
+.your-lesson .lbl{font-family:var(--display);font-size:0.72em;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:8px;}
+.your-lesson .txt{font-size:1.14em;color:var(--ink);line-height:1.6;}
+.angle{background:rgba(93, 64, 55, 0.05);border:1px solid var(--line-accent);border-radius:4px;padding:18px 20px;margin-bottom:22px;}
+.angle .lbl{font-family:var(--display);font-size:0.72em;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-weight:700;margin-bottom:8px;}
+.angle .txt{color:#4E342E;line-height:1.72;}
+.kept-note{text-align:center;color:var(--muted);font-style:italic;font-size:0.92em;line-height:1.7;margin-top:8px;}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-row .btn{flex:1;min-width:130px;}
+
+/* SHELF */
+.shelf-item{background:var(--surface);border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:4px;padding:22px;margin-bottom:16px;}
+.shelf-title{font-family:var(--serif);font-size:1.3em;font-weight:700;color:var(--ink);margin-bottom:5px;}
+.shelf-date{font-size:0.8em;color:var(--muted);font-style:italic;margin-bottom:15px;}
+.shelf-block{margin-bottom:13px;}
+.shelf-lbl{font-family:var(--display);font-size:0.7em;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:5px;}
+.shelf-lbl.lesson{color:var(--accent);}
+.shelf-text{color:#5D4037;line-height:1.65;}
+.shelf-text.lesson{font-size:1.08em;color:var(--ink); font-weight:700;}
+.shelf-remove{font-family:var(--display);font-size:0.7em;letter-spacing:1.5px;text-transform:uppercase;color:#b5604a;background:none;border:none;cursor:pointer;padding:4px 0;margin-top:4px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);
+  background:var(--surface);color:var(--accent);border:1px solid var(--line-accent);padding:13px 26px;border-radius:3px;
+  font-family:var(--display);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;font-size:0.78em;
+  box-shadow:0 8px 30px rgba(93, 64, 55, 0.2);opacity:0;transition:all .4s;z-index:100;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* PROMPT BOX */
+.promptbox{background:var(--surface);border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+.promptbox-head{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:var(--surface-2);
+  font-family:var(--display);font-size:0.72em;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-weight:700;}
+.copy-btn{background:var(--accent);color:#FEFDF8;border:none;border-radius:2px;padding:6px 14px;
+  font-family:var(--display);font-weight:700;letter-spacing:1px;text-transform:uppercase;font-size:0.82em;cursor:pointer;}
+.copy-btn:hover{background:#4E342E;}
+#nlmPrompt{margin:0;padding:14px;font-family:'Courier New',monospace;font-size:0.82em;line-height:1.6;
+  color:#5D4037;white-space:pre-wrap;word-break:break-word;}
+
+@media (max-width:560px){
+  .lib-title{font-size:2.2em;}
+  h1{font-size:2em;}
+  .story-body{font-size:1.05em;}
+  .step-q{font-size:1.35em;}
+}
+</style>
+</head>
+<body>
+<div class="progress-line" id="progress"></div>
+
+<div class="topbar">
+    <div class="brand-wrap" onclick="goLibrary()">
+        <div class="crest">
+            <svg class="arabic-r-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 16.5 3 C 16.5 12 14 18 5 22 C 9.5 20.5 12.5 14 12.5 3 Z"/>
+            </svg>
+        </div>
+        <span class="brand" dir="ltr">
+            <svg class="arabic-r-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 16.5 3 C 16.5 12 14 18 5 22 C 9.5 20.5 12.5 14 12.5 3 Z"/>
+            </svg>AWI
+        </span>
+    </div>
+    <div class="top-actions">
+        <button class="pill" onclick="openConvert()">Convert</button>
+        <button class="pill" onclick="openShelf()">Kept <span id="keptCount"></span></button>
+    </div>
+</div>
+
+<div class="wrap">
+    <div id="libraryView">
+        <div class="lib-head" style="text-align: center;">
+            <div class="eyebrow">A Space For Thoughts &amp; Ideas</div>
+            <div class="lib-title" dir="ltr">
+                <svg class="arabic-r-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 16.5 3 C 16.5 12 14 18 5 22 C 9.5 20.5 12.5 14 12.5 3 Z"/>
+                </svg>AWI
+            </div>
+            <hr class="rule-double" style="width:50%; margin: 22px auto 26px;">
+            <div class="lib-sub">Read a story. Tell it back. Keep the lesson.</div>
+        </div>
+        <div class="add-cta" onclick="openConvert()">Paste a story from NotebookLM</div>
+        <div id="libList"></div>
+    </div>
+
+    <div id="storyView" style="display:none;">
+        <div class="story-head">
+            <span class="back-link" onclick="goLibrary()">&larr; All Stories</span>
+            <div class="kicker" id="storyKicker"></div>
+            <h1 id="storyTitle"></h1>
+            <div class="read-meta" id="storyMeta"></div>
+            <hr class="rule-double" style="width:30%; margin: 22px auto 0;">
+        </div>
+        <div class="story-body" id="storyBody"></div>
+        <div class="divider">&sect; &sect; &sect;</div>
+        <div class="finish-zone">
+            <button class="btn btn-primary" onclick="finishReading()">I've finished reading</button>
+        </div>
+    </div>
+
+    <div class="step" id="step1">
+        <div class="step-kicker">Step One &middot; Before the Lesson</div>
+        <div class="step-q">Without scrolling back &mdash; what happened in this story?</div>
+        <div class="step-sub">Reconstructing it from memory is what makes it stick. Rough is fine.</div>
+        <textarea id="recallInput" placeholder="The story was about..." oninput="checkLen('recallInput','recallHint','toCheck')"></textarea>
+        <div class="hint" id="recallHint">A sentence or two is enough</div>
+        <button class="btn btn-primary" id="toCheck" onclick="afterRecall()" disabled>Continue</button>
+    </div>
+
+    <div class="step" id="stepCheck">
+        <div class="step-kicker">Check Yourself</div>
+        <div class="your-lesson">
+            <div class="lbl">What you remembered</div>
+            <div class="txt" id="recallEcho"></div>
+        </div>
+        <div class="angle">
+            <div class="lbl">What the story was about</div>
+            <div class="txt" id="summaryText"></div>
+        </div>
+        <button class="btn btn-primary" onclick="goLesson()">Now the lesson</button>
+    </div>
+
+    <div class="step" id="step2">
+        <div class="step-kicker">Step Two &middot; The Takeaway</div>
+        <div class="step-q">What is the one lesson you take from this &mdash; for your own life?</div>
+        <div class="step-sub">Not the official moral. The thing you want to carry. Writing it yourself makes it yours.</div>
+        <textarea id="lessonInput" placeholder="What this teaches me is..." oninput="checkLen('lessonInput','lessonHint','toKeep')"></textarea>
+        <div class="hint" id="lessonHint">One clear line</div>
+        <button class="btn btn-primary" id="toKeep" onclick="goKeep()" disabled>Reveal &amp; keep</button>
+    </div>
+
+    <div class="step" id="step3">
+        <div class="step-kicker">Kept</div>
+        <div class="your-lesson">
+            <div class="lbl">The lesson you drew</div>
+            <div class="txt" id="lessonEcho"></div>
+        </div>
+        <div class="angle">
+            <div class="lbl">One angle others drew</div>
+            <div class="txt" id="angleText"></div>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-ghost" onclick="goLibrary()">Next story</button>
+            <button class="btn btn-primary" onclick="openShelf()">See my shelf</button>
+        </div>
+        <p class="kept-note" id="keptNote"></p>
+    </div>
+
+    <div class="step" id="convertView" style="margin-top:24px;">
+        <div class="step-kicker">Paste &amp; Convert</div>
+        <div class="step-q" style="margin-bottom:8px;">Turn a NotebookLM story into a RAWI one</div>
+        <div class="step-sub">Two steps. First get the story in the right shape from NotebookLM, then paste it here.</div>
+
+        <div class="promptbox">
+            <div class="promptbox-head">
+                <span>Step one &mdash; paste this into NotebookLM</span>
+                <button class="copy-btn" onclick="copyPrompt()">Copy</button>
+            </div>
+            <pre id="nlmPrompt">Rewrite the source as a single story in EXACTLY this template. Output only this and nothing else.
+
+CATEGORY: A True Story then a middot then one theme word such as Courage or Survival
+TITLE: a compelling title
+DETAIL: place, year then a middot then about N minutes
+STORY:
+Tell it as flowing narrative using only real, verifiable facts. Spell out all numbers. No headings, no bullet points. Separate each paragraph with a blank line.
+SUMMARY:
+Three or four sentences recapping what actually happened.
+LESSON:
+One or two sentences: the deeper takeaway a reader could carry into their own life.</pre>
+        </div>
+
+        <label style="margin-top:22px;">Step two &mdash; paste what NotebookLM gave you</label>
+        <textarea id="convertBox" class="tall" placeholder="Paste the whole block here, labels and all..."></textarea>
+        <button class="btn btn-primary" style="width:100%;" onclick="doConvert()">Convert</button>
+        <div style="text-align:center;margin-top:14px;">
+            <span class="back-link" onclick="openAdd()">or fill it in by hand instead</span>
+        </div>
+    </div>
+
+    <div class="step" id="addView" style="margin-top:24px;">
+        <div class="step-kicker">Add a Story</div>
+        <div class="step-q" style="margin-bottom:18px;">Fill it in. It goes straight to your library.</div>
+
+        <label>Category line</label>
+        <div class="field-help">The small line above the title. e.g. "A True Story &middot; Survival"</div>
+        <input type="text" id="addKicker" placeholder="A True Story &middot; Survival">
+
+        <label>Title</label>
+        <input type="text" id="addTitle" placeholder="The Man Who Cut Off His Own Arm">
+
+        <label>Detail line</label>
+        <div class="field-help">Place, time, reading length.</div>
+        <input type="text" id="addMeta" placeholder="Utah, 2003 &middot; about four minutes">
+
+        <label>The story</label>
+        <div class="field-help">Paste the full story. Leave a blank line between paragraphs.</div>
+        <textarea id="addBody" class="tall" placeholder="First paragraph...
+
+Second paragraph...
+
+Third paragraph..."></textarea>
+
+        <label>What the story was about (the answer)</label>
+        <div class="field-help">A short, factual recap. Shown after the reader tells it back, so they can check their memory.</div>
+        <textarea id="addSummary" placeholder="In short: a climber got trapped by a boulder and..."></textarea>
+
+        <label>The lesson / angle (the summary)</label>
+        <div class="field-help">The takeaway shown after the reader writes their own lesson.</div>
+        <textarea id="addAngle" placeholder="When no one is coming to save you, the will to act is..."></textarea>
+
+        <button class="btn btn-primary" style="width:100%;margin-top:6px;" onclick="saveNewStory()">Add to library</button>
+
+        <div style="margin-top:26px;padding-top:20px;border-top:1px solid var(--line);">
+            <div class="field-help" style="margin-bottom:12px;">Your added stories live in this browser. Export to back them up or move them to another device.</div>
+            <div class="btn-row">
+                <button class="btn btn-ghost" onclick="exportStories()">Export mine</button>
+                <button class="btn btn-ghost" onclick="toggleImport()">Import</button>
+            </div>
+            <div id="importArea" style="display:none;margin-top:14px;">
+                <textarea id="importBox" placeholder="Paste exported story data here..."></textarea>
+                <button class="btn btn-primary" style="width:100%;" onclick="importStories()">Load these stories</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="step" id="shelfView" style="margin-top:24px;">
+        <div class="step-kicker">Your Shelf</div>
+        <div class="step-q" style="margin-bottom:20px;">Stories you've kept</div>
+        <div id="shelfList"></div>
+        <button class="btn btn-ghost" style="margin-top:18px;width:100%;" onclick="goLibrary()">Back to stories</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/@capacitor/core"></script>
+<script src="https://unpkg.com/@capacitor/preferences"></script>
+
+<script>
+const { Preferences } = window.CapacitorPlugins || Capacitor;
+
+/* Built-in stories (ship with the app). Added stories live in Capacitor Preferences. */
+const BUILTIN = [
+    {
+        id: "estonia-singing",
+        kicker: "A True Story \u00b7 Courage",
+        title: "The Country That Sang Its Way to Freedom",
+        meta: "Estonia, 1987\u20131991 \u00b7 about four minutes",
+        body: [
+            "For nearly fifty years, Estonia did not exist on most maps as its own country. It had been swallowed by the Soviet Union, its language pushed to the margins, its old national songs quietly forbidden. To sing certain songs in public was to risk being noticed by the wrong people.",
+            "Estonians had always been a singing nation. Since the eighteen-sixties they had gathered for a vast song festival, tens of thousands of voices joined in choir on a single field. Under Soviet rule the festival continued, but the songs that mattered most to them were left off the official list.",
+            "Then, in the late nineteen-eighties, something shifted. As the Soviet grip loosened, Estonians began testing the edges of what they were allowed to do. And the thing they reached for was not weapons. It was their voices.",
+            "In the summer of nineteen eighty-eight, people gathered at the Tallinn song festival grounds night after night, in the thousands, then the hundreds of thousands, singing the forbidden songs. On some nights a quarter of the entire nation was singing together in the open air.",
+            "An artist named Heinz Valk gave it a name that stuck: the Singing Revolution. There were no tanks on their side, no army. There was a melody, and a crowd large enough that no one could be singled out.",
+            "The boldest moment came in August nineteen eighty-nine. Across all three Baltic nations, roughly two million people joined hands, forming a human chain more than six hundred kilometres long, from Tallinn in the north to Vilnius in the south.",
+            "The Soviet authorities were furious, but there was nothing obvious to crush. You cannot arrest a song. You cannot shoot a chain of people holding hands without the whole world watching.",
+            "By nineteen ninety-one, Estonia had restored its independence. It had loosened one of the most powerful empires of the century not by matching its violence, but by refusing to offer any."
+        ],
+        summary: "Estonia, occupied by the Soviet Union, won back its independence largely through mass nonviolent singing. Hundreds of thousands gathered to sing banned national songs, and two million people across the Baltics formed a human chain. The authorities had nothing to crush, and by 1991 Estonia was free.",
+        angle: "The strongest force in the story was that no single person could be punished. Courage stopped being dangerous the moment it became collective. A thing you are afraid to do alone can become unstoppable the moment enough people do it together."
+    },
+    {
+        id: "bell-burnell",
+        kicker: "A True Story \u00b7 Recognition",
+        title: "The Student Who Found a Star and Lost the Prize",
+        meta: "Cambridge, 1967 \u00b7 about three minutes",
+        body: [
+            "In nineteen sixty-seven, a young graduate student named Jocelyn Bell was helping run a new radio telescope outside Cambridge. Her job was to comb through hundreds of metres of paper chart, line by line, looking for anything unusual in the signals from space.",
+            "One night she noticed a strange smudge in the data. A signal that pulsed with impossible regularity, ticking like a clock, every one and a third seconds. Nothing natural was supposed to behave like that.",
+            "For a while the team half-joked it might be a message from another civilisation. They labelled it LGM-1, for Little Green Men. But Bell kept checking, and soon found a second pulsing source elsewhere in the sky. Two alien broadcasts at once was far less likely than one new kind of star.",
+            "What she had found was a pulsar \u2014 the spinning, collapsed core of a dead star, sweeping a beam of radiation across the universe like a lighthouse. It was one of the most important discoveries in the history of astronomy.",
+            "In nineteen seventy-four, the Nobel Prize in Physics was awarded for the discovery of pulsars. It went to her supervisor and a colleague. Bell, the one who had spotted the signal and refused to dismiss it, was not named.",
+            "She did not spend her life bitter. She kept working, kept teaching, and became one of the most respected scientists in Britain. Decades later she was given a three million dollar prize for the discovery \u2014 and gave every penny away, to fund scholarships for women, refugees, and minorities entering physics."
+        ],
+        summary: "As a graduate student, Jocelyn Bell Burnell discovered pulsars by noticing a strange regular signal others might have dismissed. The 1974 Nobel Prize went to her supervisor, not her. She carried on without bitterness, and later gave away a major prize to help under-represented people enter science.",
+        angle: "She could not control who got the credit. She could only control the quality of her attention and what she did with what came later. The recognition was taken; the work, and the way she carried herself, never was."
+    },
+    {
+        id: "radium-girls",
+        kicker: "A True Story \u00b7 Standing Up",
+        title: "The Women Who Glowed in the Dark",
+        meta: "United States, 1917\u20131928 \u00b7 about three minutes",
+        body: [
+            "In the years around the First World War, hundreds of young women took jobs painting watch dials. The paint contained radium, and it glowed a soft green in the dark. The work was considered clean, even glamorous. Some painted their nails and teeth with it for fun.",
+            "To paint the tiny numbers precisely, they were taught to shape the brush tip with their lips. Dip, lip, paint. Hundreds of times a day, they swallowed tiny amounts of one of the most radioactive substances on earth.",
+            "Their employers told them it was harmless. The company's own chemists handled the same radium behind lead shields and with tongs, but the women at the tables were given nothing.",
+            "Within a few years, the workers began falling ill in horrifying ways. Their teeth loosened and fell out. Their jawbones crumbled. Some doctors, paid by the company, blamed other causes to protect it.",
+            "A handful of the dying women decided to fight. Led by a worker named Grace Fryer, they searched for two years before finding a lawyer willing to take the case against a powerful corporation. Several were too weak to raise their arms in the courtroom.",
+            "They won. Their case became a landmark, helping establish that a company could be held responsible for the safety of its workers. The standards that came from their suffering went on to protect countless people who would never know their names."
+        ],
+        summary: "Young women painting glowing radium watch dials were told the paint was safe and taught to lick their brushes. Many died terribly from radiation. A few, led by Grace Fryer, sued and won a landmark case that helped force companies to be responsible for worker safety.",
+        angle: "They were lied to, and dying, and had every reason to give up quietly. Instead they spent their last strength making sure it could not happen to the next person. Sometimes the point of standing up is not to save yourself \u2014 it is to change the rule for everyone after you."
+    }
+];
+
+let currentStory = null;
+let recallText = '';
+let storageReady = false;
+
+const Storage = {
+  async get(key) {
+    try {
+      if (Preferences) {
+        const { value } = await Preferences.get({ key });
+        return value ? JSON.parse(value) : null;
+      }
+    } catch (e) {}
+    return JSON.parse(localStorage.getItem(key));
+  },
+  async set(key, val) {
+    const data = JSON.stringify(val);
+    try {
+      if (Preferences) {
+        await Preferences.set({ key, value: data });
+      }
+    } catch (e) {}
+    localStorage.setItem(key, data);
+  }
+};
+
+let customCache = [];
+let keptCache = [];
+
+async function initStorage() {
+  customCache = await Storage.get('osm_custom') || [];
+  keptCache = await Storage.get('osm_kept') || [];
+  storageReady = true;
+  updateKeptCount();
+  renderLibrary();
+}
+
+window.addEventListener('scroll', function() {
+    const h = document.body.scrollHeight - window.innerHeight;
+    const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+    document.getElementById('progress').style.width = pct + '%';
+});
+
+function getCustom() { return customCache; }
+function allStories() { return getCustom().concat(BUILTIN); }
+function getKept() { return keptCache; }
+function isKept(id) { return getKept().some(k => k.storyId === id); }
+function updateKeptCount() {
+    const n = getKept().length;
+    document.getElementById('keptCount').textContent = n ? '(' + n + ')' : '';
+}
+function hideAll() {
+    ['libraryView','storyView'].forEach(id => document.getElementById(id).style.display = 'none');
+    ['step1','stepCheck','step2','step3','convertView','addView','shelfView'].forEach(id => document.getElementById(id).classList.remove('active'));
+}
+
+function goLibrary() {
+    hideAll();
+    renderLibrary();
+    document.getElementById('libraryView').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function renderLibrary() {
+    const stories = allStories();
+    const custom = getCustom();
+    let html = '';
+    stories.forEach((s, i) => {
+        const yours = custom.some(c => c.id === s.id);
+        html += '<div class="lib-item" onclick="openStory(\'' + s.id + '\')">';
+        html += '<div class="lib-index">No. ' + roman(i + 1) + '</div>';
+        html += '<div class="lib-kicker">' + esc(s.kicker) + '</div>';
+        html += '<h3>' + esc(s.title) + '</h3>';
+        html += '<div class="lib-meta">' + esc(s.meta) + '</div>';
+        html += '<div class="lib-tags">';
+        if (isKept(s.id)) html += '<span class="lib-done">Kept</span>';
+        if (yours) html += '<span class="lib-yours">Added by you</span>';
+        html += '</div></div>';
+    });
+    document.getElementById('libList').innerHTML = html;
+}
+
+function openStory(id) {
+    currentStory = allStories().find(s => s.id === id);
+    if (!currentStory) return;
+    hideAll();
+    document.getElementById('storyKicker').textContent = currentStory.kicker;
+    document.getElementById('storyTitle').textContent = currentStory.title;
+    document.getElementById('storyMeta').textContent = currentStory.meta;
+    document.getElementById('storyBody').innerHTML = currentStory.body.map(p => '<p>' + esc(p) + '</p>').join('');
+    document.getElementById('storyView').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function checkLen(inputId, hintId, btnId) {
+    const v = document.getElementById(inputId).value.trim();
+    const hint = document.getElementById(hintId);
+    const btn = document.getElementById(btnId);
+    if (v.length >= 12) { btn.disabled = false; hint.textContent = 'Good'; hint.classList.add('ready'); }
+    else { btn.disabled = true; hint.classList.remove('ready'); hint.textContent = inputId === 'recallInput' ? 'A sentence or two is enough' : 'One clear line'; }
+}
+
+function finishReading() {
+    document.getElementById('storyView').style.display = 'none';
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('recallInput').value = '';
+    document.getElementById('toCheck').disabled = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('recallInput').focus();
+}
+
+function afterRecall() {
+    recallText = document.getElementById('recallInput').value.trim();
+    document.getElementById('step1').classList.remove('active');
+    if (currentStory.summary && currentStory.summary.trim()) {
+        document.getElementById('recallEcho').textContent = recallText;
+        document.getElementById('summaryText').textContent = currentStory.summary;
+        document.getElementById('stepCheck').classList.add('active');
+    } else {
+        showLesson();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goLesson() {
+    document.getElementById('stepCheck').classList.remove('active');
+    showLesson();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function showLesson() {
+    document.getElementById('step2').classList.add('active');
+    document.getElementById('lessonInput').value = '';
+    document.getElementById('toKeep').disabled = true;
+    document.getElementById('lessonInput').focus();
+}
+
+function goKeep() {
+    const lessonText = document.getElementById('lessonInput').value.trim();
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step3').classList.add('active');
+    document.getElementById('lessonEcho').textContent = lessonText;
+    document.getElementById('angleText').textContent = currentStory.angle || 'No angle was written for this story.';
+
+    keptCache.unshift({ storyId: currentStory.id, title: currentStory.title, recall: recallText, lesson: lessonText, date: new Date().toLocaleDateString() });
+    Storage.set('osm_kept', keptCache);
+    updateKeptCount();
+    document.getElementById('keptNote').textContent = 'Saved to your shelf. This story will come back in a week to test what stayed.';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ADD STORY */
+function openAdd() {
+    hideAll();
+    document.getElementById('addView').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function saveNewStory() {
+    const kicker = document.getElementById('addKicker').value.trim();
+    const title = document.getElementById('addTitle').value.trim();
+    const meta = document.getElementById('addMeta').value.trim();
+    const bodyRaw = document.getElementById('addBody').value.trim();
+    const summary = document.getElementById('addSummary').value.trim();
+    const angle = document.getElementById('addAngle').value.trim();
+
+    if (!title) { showToast('Give it a title'); return; }
+    if (!bodyRaw) { showToast('Add the story text'); return; }
+
+    const body = bodyRaw.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 0);
+
+    const story = {
+        id: 'custom-' + Date.now(),
+        kicker: kicker || 'A Story',
+        title: title,
+        meta: meta || '',
+        body: body,
+        summary: summary,
+        angle: angle
+    };
+
+    customCache.unshift(story);
+    Storage.set('osm_custom', customCache);
+
+    ['addKicker','addTitle','addMeta','addBody','addSummary','addAngle'].forEach(id => document.getElementById(id).value = '');
+    showToast('Added to your library');
+    goLibrary();
+}
+
+function exportStories() {
+    const custom = getCustom();
+    if (custom.length === 0) { showToast('No added stories yet'); return; }
+    toggleImport(true);
+    document.getElementById('importBox').value = JSON.stringify(custom);
+    showToast('Copied below \u2014 save this text');
+}
+function toggleImport(forceOpen) {
+    const area = document.getElementById('importArea');
+    area.style.display = (forceOpen || area.style.display === 'none') ? 'block' : 'none';
+}
+function importStories() {
+    const raw = document.getElementById('importBox').value.trim();
+    if (!raw) { showToast('Paste story data first'); return; }
+    try {
+        const incoming = JSON.parse(raw);
+        if (!Array.isArray(incoming)) throw new Error('bad');
+        const existingIds = new Set(customCache.map(c => c.id));
+        incoming.forEach(s => { if (!existingIds.has(s.id)) customCache.unshift(s); });
+        Storage.set('osm_custom', customCache);
+        showToast('Stories loaded');
+        goLibrary();
+    } catch (e) {
+        showToast('That data could not be read');
+    }
+}
+
+/* PASTE & CONVERT */
+function openConvert() {
+    hideAll();
+    document.getElementById('convertView').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyPrompt() {
+    const text = document.getElementById('nlmPrompt').textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast('Prompt copied')).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+}
+function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showToast('Prompt copied'); } catch (e) { showToast('Select and copy manually'); }
+    document.body.removeChild(ta);
+}
+
+function parseStory(text) {
+    text = text.replace(/\r/g, '');
+    const headers = ['CATEGORY','TITLE','DETAIL','STORY','SUMMARY','LESSON'];
+    const re = new RegExp('^[\\s>*#\\-]*(' + headers.join('|') + ')\\s*[:\\-]\\s*', 'gmi');
+    const marked = text.replace(re, '\u0001$1\u0001');
+    const parts = marked.split('\u0001');
+    const out = {};
+    for (let i = 1; i < parts.length - 1; i += 2) {
+        const key = parts[i].trim().toUpperCase();
+        const val = (parts[i + 1] || '').trim();
+        out[key] = val;
+    }
+    return {
+        kicker: out.CATEGORY || '',
+        title: out.TITLE || '',
+        meta: out.DETAIL || '',
+        bodyRaw: out.STORY || '',
+        summary: out.SUMMARY || '',
+        angle: out.LESSON || ''
+    };
+}
+
+function doConvert() {
+    const raw = document.getElementById('convertBox').value.trim();
+    if (!raw) { showToast('Paste the story first'); return; }
+    const p = parseStory(raw);
+    if (!p.title && !p.bodyRaw) {
+        showToast('Could not read it \u2014 check the labels');
+        return;
+    }
+    document.getElementById('addKicker').value = p.kicker;
+    document.getElementById('addTitle').value = p.title;
+    document.getElementById('addMeta').value = p.meta;
+    document.getElementById('addBody').value = p.bodyRaw;
+    document.getElementById('addSummary').value = p.summary;
+    document.getElementById('addAngle').value = p.angle;
+    document.getElementById('convertBox').value = '';
+    openAdd();
+    showToast('Converted \u2014 review, then add');
+}
+
+/* SHELF */
+function openShelf() {
+    hideAll();
+    renderShelf();
+    document.getElementById('shelfView').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function renderShelf() {
+    const kept = getKept();
+    const list = document.getElementById('shelfList');
+    if (kept.length === 0) {
+        list.innerHTML = '<div style="text-align:center;color:#9a8b7c;font-style:italic;padding:30px 10px;line-height:1.7;">Nothing kept yet.<br>Read a story and draw a lesson \u2014 it lands here.</div>';
+        return;
+    }
+    let html = '';
+    kept.forEach((s, i) => {
+        html += '<div class="shelf-item">';
+        html += '<div class="shelf-title">' + esc(s.title) + '</div>';
+        html += '<div class="shelf-date">Kept ' + s.date + '</div>';
+        html += '<div class="shelf-block"><div class="shelf-lbl lesson">The lesson you drew</div><div class="shelf-text lesson">' + esc(s.lesson) + '</div></div>';
+        html += '<div class="shelf-block"><div class="shelf-lbl">What you remembered</div><div class="shelf-text">' + esc(s.recall) + '</div></div>';
+        html += '<button class="shelf-remove" onclick="removeKept(' + i + ')">Remove from shelf</button>';
+        html += '</div>';
+    });
+    list.innerHTML = html;
+}
+function removeKept(i) {
+    keptCache.splice(i, 1);
+    Storage.set('osm_kept', keptCache);
+    renderShelf();
+    updateKeptCount();
+}
+
+function roman(n) {
+    const map = [[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+    let r = '';
+    for (const [v, sym] of map) { while (n >= v) { r += sym; n -= v; } }
+    return r;
+}
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1900); }
+
+initStorage();
+</script>
+</body>
+</html>
